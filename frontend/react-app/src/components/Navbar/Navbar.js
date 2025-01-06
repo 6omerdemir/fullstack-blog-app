@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
   const navigate = useNavigate();
-  
+  let userId = 1;
   return (
     <Menu>
       <MenuItem header>BLOG</MenuItem>
@@ -14,7 +14,7 @@ const Navbar = () => {
       />
       <MenuItem
         name='user'
-        onClick={() => navigate('/user')}
+        onClick={() => navigate(`/users/${userId}`)}
       />
     </Menu>
   )

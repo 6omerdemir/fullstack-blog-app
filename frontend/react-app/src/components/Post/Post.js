@@ -11,7 +11,7 @@ function Post() {
 
     useEffect(() => {
         let postService = new PostService();
-        postService.getPostById(postId)
+        postService.getOnePostById(postId)
             .then(result => {
                 setPost(result.data);
                 setIsLoaded(true);

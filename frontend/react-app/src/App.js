@@ -13,10 +13,9 @@ function App() {
       <div>
         <Navbar />
         <Routes>
-    
           <Route path="/" element={<Home />} />
-          <Route path="/user" element={<User />} />
           <Route path="/posts/:postId" element={<Post />} />
+          <Route path="/users/:userId" element={<User />} />
         </Routes>
       </div>
     </Router>

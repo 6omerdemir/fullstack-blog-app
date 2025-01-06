@@ -1,29 +1,27 @@
 import axios from './axios';
 export default class PostService {
 
- getAllPosts(){
-    return axios.get('/posts');
+getAllPosts(userId) {
+        var url = userId ? `/posts?userId=${userId}` : '/posts';
+        return axios.get(url);
 };
 
- getPostById = (postId) => {
+ getOnePostById(postId){
     return axios.get(`/posts/${postId}`)
 };
 
 // Yeni post oluşturma
- createPost = (postData) => {
+ createPost(postData){
     return axios.post('/posts', postData)
-        .then(response => response.data);
 };
 
 // Post güncelleme
- updatePost = (postId, postData) => {
+ updatePostById(postId, postData){
     return axios.put(`/posts/${postId}`, postData)
-        .then(response => response.data);
 };
 
 // Post silme
- deletePost = (postId) => {
+ deletePostById(postId){
     return axios.delete(`/posts/${postId}`)
-        .then(response => response.data);
 };
 }; 

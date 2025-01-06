@@ -11,7 +11,7 @@ import {
 } from 'semantic-ui-react';
 import PostService from '../../services/PostService';
 
-function PostCard() {
+function PostCard({ userId }) {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [posts, setPosts] = useState([]);
@@ -19,7 +19,7 @@ function PostCard() {
 
     useEffect(() => {
         let postService = new PostService();
-        postService.getAllPosts()
+        postService.getAllPosts(userId)
             .then(result => {
                 setIsLoaded(true);
                 setPosts(result.data);
@@ -28,7 +28,7 @@ function PostCard() {
                 setIsLoaded(true);
                 setError(error);
             });
-    }, []);
+    }, [userId]);
 
     const handlePostClick = (postId) => {
         navigate(`/posts/${postId}`);
