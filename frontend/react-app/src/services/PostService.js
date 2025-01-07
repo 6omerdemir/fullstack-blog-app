@@ -10,17 +10,14 @@ getAllPosts(userId) {
     return axios.get(`/posts/${postId}`)
 };
 
-// Yeni post oluşturma
  createPost(postData){
     return axios.post('/posts', postData)
 };
 
-// Post güncelleme
  updatePostById(postId, postData){
     return axios.put(`/posts/${postId}`, postData)
 };
 
-// Post silme
  deletePostById(postId){
     return axios.delete(`/posts/${postId}`)
 };
