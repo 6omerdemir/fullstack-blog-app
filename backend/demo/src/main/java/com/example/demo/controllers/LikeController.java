@@ -1,8 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dtos.requests.CommentCreateRequest;
 import com.example.demo.dtos.requests.LikeCreateRequest;
-import com.example.demo.entities.Comment;
 import com.example.demo.entities.Like;
 import com.example.demo.services.LikeService;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +22,7 @@ public class LikeController {
     }
 
     @GetMapping("/userId/{userId}")
-    public List<Like> getLikessByUserId(@PathVariable Long userId) {
+    public List<Like> getLikesByUserId(@PathVariable Long userId) {
         return likeService.getAllLikesByUserId(userId);
     }
 

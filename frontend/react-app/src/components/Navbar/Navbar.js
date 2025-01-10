@@ -1,10 +1,11 @@
-import React from 'react'
-import { MenuItem, Menu } from 'semantic-ui-react'
-import { useNavigate } from 'react-router-dom'
+import React from 'react';
+import { MenuItem, Menu, Button } from 'semantic-ui-react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const navigate = useNavigate();
   let userId = 1;
+  
   return (
     <Menu>
       <MenuItem header>BLOG</MenuItem>
@@ -16,8 +17,20 @@ const Navbar = () => {
         name='user'
         onClick={() => navigate(`/users/${userId}`)}
       />
+      <Menu.Menu position='right'>
+        <Button
+          style={{
+            border: '2px solid green', // Kenarlık ekledik
+            color: 'green', // Yazı rengi
+            backgroundColor: 'transparent', // Arka planı şeffaf yaptık
+          }}
+          onClick={() => navigate('/post/form')}
+        >
+          Write
+        </Button>
+      </Menu.Menu>
     </Menu>
-  )
+  );
 }
 
 export default Navbar;

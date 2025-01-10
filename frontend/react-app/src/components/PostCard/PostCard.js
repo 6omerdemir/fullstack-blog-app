@@ -10,11 +10,14 @@ import {
     Image,
 } from 'semantic-ui-react';
 import PostService from '../../services/PostService';
+import './PostCard.css';
+import { Button } from 'semantic-ui-react'
 
 function PostCard({ userId }) {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [posts, setPosts] = useState([]);
+    const [liked, setLiked] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,6 +37,11 @@ function PostCard({ userId }) {
         navigate(`/posts/${postId}`);
     };
 
+    const handleLikeClick = (postId) => {
+        postId.stopPropagation();
+        setLiked(!liked);
+    };
+
     if (error) {
         return <div>Error: {error.message}</div>;
     } else if (!isLoaded) {
@@ -43,7 +51,7 @@ function PostCard({ userId }) {
     return (
         <div>
             {posts.map(post => (
-                <Card key={post.id} onClick={() => handlePostClick(post.id)} style={{ cursor: 'pointer' }}>
+                <Card key={post.id} onClick={() => handlePostClick(post.id)} className="custom-card" style={{ cursor: 'pointer' }}>
                     <Image src='/images/avatar/large/matthew.png' wrapped ui={false} />
                     <CardContent>
                         <CardHeader>{post.userName}</CardHeader>
@@ -55,10 +63,15 @@ function PostCard({ userId }) {
                         </CardDescription>
                     </CardContent>
                     <CardContent extra>
-                        <a>
-                            <Icon name='user' />
-                            22 Friends
-                        </a>
+                        <div>
+                            <Button
+                                color={liked ? 'red' : 'white'}
+                                content='Like'
+                                icon='heart'
+                                label={{ basic: true, color: 'white', pointing: 'left', content: '2,048' }}
+                                onClick={handleLikeClick}
+                            />
+                        </div>
                     </CardContent>
                 </Card>
             ))}
