@@ -15,7 +15,7 @@ public class Post {
     private String title;
 
     @Lob
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "LONGTEXT")
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER)

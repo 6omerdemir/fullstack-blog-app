@@ -22,7 +22,7 @@ const Navbar = () => {
           style={{
             border: '2px solid green', // Kenarlık ekledik
             color: 'green', // Yazı rengi
-            backgroundColor: 'transparent', // Arka planı şeffaf yaptık
+            backgroundColor: 'transparent', // Arka planı şeffaf yaptıks
           }}
           onClick={() => navigate('/post/form')}
         >

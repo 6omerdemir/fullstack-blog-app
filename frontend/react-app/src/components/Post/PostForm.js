@@ -34,7 +34,7 @@ function PostForm() {
         />
       </div>
       <div>
-      <Button color='green'>Submit</Button>
+      <Button color='green'>Publish</Button>
       </div>
     </Container>
   );
