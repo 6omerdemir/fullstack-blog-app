@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  let userId = 1;
-  
+  let userId = 1; 
+
   return (
     <Menu>
       <MenuItem header>BLOG</MenuItem>
@@ -20,11 +20,11 @@ const Navbar = () => {
       <Menu.Menu position='right'>
         <Button
           style={{
-            border: '2px solid green', // Kenarlık ekledik
-            color: 'green', // Yazı rengi
-            backgroundColor: 'transparent', // Arka planı şeffaf yaptıks
+            border: '2px solid green',
+            color: 'green',
+            backgroundColor: 'transparent',
           }}
-          onClick={() => navigate('/post/form')}
+          onClick={() => navigate(`/post/form/${userId}`)} 
         >
           Write
         </Button>

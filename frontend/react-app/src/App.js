@@ -17,7 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/posts/:postId" element={<Post />} />
           <Route path="/users/:userId" element={<User />} />
-          <Route path="post/form" element={<PostForm/>}/>
+          <Route path="/post/form/:userId" element={<PostForm />} />
         </Routes>
       </div>
     </Router>
