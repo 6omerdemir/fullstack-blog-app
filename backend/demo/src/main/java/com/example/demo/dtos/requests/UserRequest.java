@@ -1,7 +1,7 @@
 package com.example.demo.dtos.requests;
 
 public class UserRequest {
-    private String username;
+    private String userName;
     private String password;
 
     // Parametresiz constructor
@@ -9,18 +9,18 @@ public class UserRequest {
     }
 
     // Parametreli constructor
-    public UserRequest(String username, String password) {
-        this.username = username;
+    public UserRequest(String userName, String password) {
+        this.userName = userName;
         this.password = password;
     }
 
     // Getter ve Setter metodları
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {

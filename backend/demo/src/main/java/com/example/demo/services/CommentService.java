@@ -48,7 +48,6 @@ public class CommentService {
         Post post = postService.getOnePostById(commentCreateRequest.getPostId());
         if(user != null && post!= null){
             Comment newComment = new Comment();
-            newComment.setId(commentCreateRequest.getId());
             newComment.setText(commentCreateRequest.getText());
             newComment.setUser(user);
             newComment.setPost(post);

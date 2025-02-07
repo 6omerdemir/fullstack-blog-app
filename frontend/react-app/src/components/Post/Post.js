@@ -8,7 +8,7 @@ function Post() {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [post, setPost] = useState(null);
-    const { postId } = useParams();
+    const { postId} = useParams();
 
     useEffect(() => {
         let postService = new PostService();
@@ -51,7 +51,7 @@ function Post() {
                 <p>{post.text}</p>
             </div>
             <div>
-                <Comments />
+                <Comments postId={postId} userId={1} />
             </div>
         </Container>
     );

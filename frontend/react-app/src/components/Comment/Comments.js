@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import CommentService from '../../services/CommentService';
+import { useParams } from 'react-router-dom';
 import {
-    Header, 
+    Header,
     CommentText,
     CommentMetadata,
     CommentGroup,
@@ -14,7 +16,30 @@ import {
     Comment,
     Form,
 } from 'semantic-ui-react';
-function Comments({ comments }) {
+function Comments() {
+    const {postId, userId} = useParams();
+    const [text, setText] = useState('');
+    const handleAddReply = async () => {
+        if (!userId) {
+            console.error('User ID is missing');
+            return;
+        }
+
+        const commentData = {
+            userId,
+            postId,
+            text,
+        };
+
+        try {
+            const commentService = new CommentService();
+            const response = await commentService.createOneComment(commentData);
+            console.log('Comment created:', response.data);
+            setText('');
+        } catch (error) {
+            console.error('Error creating post:', error);
+        }
+    };
     return (
         <div>
             <div>
@@ -24,7 +49,21 @@ function Comments({ comments }) {
                     </Header>
 
                     <Comment>
-                        <CommentAvatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+                        <Comment.Avatar
+                            style={{
+                                backgroundColor: '#2185d0',
+                                color: 'white',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                fontSize: '1.2rem',
+                                fontWeight: 'bold',
+                                width: '40px',
+                                height: '40px',
+                            }}
+                        >
+                            M
+                        </Comment.Avatar>
                         <CommentContent>
                             <CommentAuthor as='a'>Matt</CommentAuthor>
                             <CommentMetadata>
@@ -84,7 +123,7 @@ function Comments({ comments }) {
 
                     <Form reply>
                         <FormTextArea />
-                        <Button content='Add Reply' labelPosition='left' icon='edit' primary />
+                        <Button content='Add Reply' labelPosition='left' icon='edit' primary onClick={handleAddReply} />
                     </Form>
                 </CommentGroup>
             </div>
