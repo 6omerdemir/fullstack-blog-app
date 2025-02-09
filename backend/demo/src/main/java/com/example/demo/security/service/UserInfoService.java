@@ -16,7 +16,6 @@ import java.util.Optional;
 public class UserInfoService implements UserDetailsService {
     private UserRepository userRepository;
 
-
     public UserInfoService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -24,7 +23,6 @@ public class UserInfoService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUserName(username);
-
         // Converting UserInfo to UserDetails
         return user.map(u -> new UserInfoDetails(u))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));

@@ -45,6 +45,10 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestBody UserRequest userRequest) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userRequest.getUserName(), userRequest.getPassword());
+        System.out.println("Extracted Username: " + authToken.getName());
+        System.out.println("Authentication result: " + authToken.isAuthenticated());
+        System.out.println("Authorities: " + authToken.getAuthorities());
+
         Authentication authentication = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = jwtService.generateToken(userRequest.getUserName());
@@ -62,34 +66,4 @@ public class AuthController {
         }
         return new ResponseEntity<>("User already exists", HttpStatus.BAD_REQUEST);
     }
-
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "Welcome this endpoint is not secure";
-    }
-
-
-    @GetMapping("/user/userProfile")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public String userProfile() {
-        return "Welcome to User Profile";
-    }
-
-    @GetMapping("/admin/adminProfile")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String adminProfile() {
-        return "Welcome to Admin Profile";
-    }
-
-//    @PostMapping("/generateToken")
-//    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-//        );
-//        if (authentication.isAuthenticated()) {
-//            return jwtService.generateToken(authRequest.getUsername());
-//        } else {
-//            throw new UsernameNotFoundException("Invalid user request!");
-//        }
-//    }
 }
