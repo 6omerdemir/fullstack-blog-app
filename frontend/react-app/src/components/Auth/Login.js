@@ -39,7 +39,6 @@ function Login() {
                     border: '1px solid #2185d0',
                 }}
             />
-
             <Input
                 type='password'
                 placeholder='Password'
@@ -53,8 +52,7 @@ function Login() {
                 }}
             />
 
-            <Button primary size="large"
-            onClick={handleLogin}>Continue</Button>
+            <Button primary size="large" onClick={handleLogin}>Continue</Button>
             <hr style={{
                 width: '20%',
                 border: 'none',
