@@ -44,16 +44,17 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody UserRequest userRequest) {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userRequest.getUserName(), userRequest.getPassword());
-        System.out.println("Extracted Username: " + authToken.getName());
-        System.out.println("Authentication result: " + authToken.isAuthenticated());
-        System.out.println("Authorities: " + authToken.getAuthorities());
-
-        Authentication authentication = authenticationManager.authenticate(authToken);
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(userRequest.getUserName(), userRequest.getPassword());
+        Authentication authentication = authenticationManager.authenticate(authToken); // authentication sonucu burada
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = jwtService.generateToken(userRequest.getUserName());
+        System.out.println("Extracted Username: " + authentication.getName());
+        System.out.println("Authentication result: " + authentication.isAuthenticated());
+        System.out.println("Authorities: " + authentication.getAuthorities());
         return "Bearer " + jwtToken;
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserRequest userRequest) {
