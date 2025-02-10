@@ -28,6 +28,16 @@ const Navbar = () => {
         >
           Write
         </Button>
+        <Button
+          style={{
+            border: '2px solid #4287f5',
+            color: 'white',
+            backgroundColor: '#4287f5',
+          }}
+          onClick={() => navigate(`/login`)} 
+        >
+          Sign In
+        </Button>
       </Menu.Menu>
     </Menu>
   );

@@ -4,9 +4,11 @@ import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
 import User from './components/User/User';
 import Post from './components/Post/Post';
+import Register from './components/Auth/Register';
 import 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css'; 
 import PostForm from './components/Post/PostForm';
+import Login from './components/Auth/Login';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/posts/:postId" element={<Post />} />
           <Route path="/users/:userId" element={<User />} />
           <Route path="/post/form/:userId" element={<PostForm />} />
+          <Route path="/login" element={<Login/>}/>
+          <Route path="/register" element={<Register/>}/>
         </Routes>
       </div>
     </Router>
