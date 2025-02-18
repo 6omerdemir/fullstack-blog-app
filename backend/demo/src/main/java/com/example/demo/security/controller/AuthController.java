@@ -2,6 +2,7 @@ package com.example.demo.security.controller;
 
 
 import com.example.demo.dtos.requests.UserRequest;
+import com.example.demo.dtos.responses.AuthResponse;
 import com.example.demo.entities.User;
 import com.example.demo.security.entity.AuthRequest;
 import com.example.demo.security.service.JwtService;
@@ -43,28 +44,32 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserRequest userRequest) {
+    public AuthResponse login(@RequestBody UserRequest userRequest) {
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(userRequest.getUserName(), userRequest.getPassword());
         Authentication authentication = authenticationManager.authenticate(authToken); // authentication sonucu burada
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = jwtService.generateToken(userRequest.getUserName());
-        System.out.println("Extracted Username: " + authentication.getName());
-        System.out.println("Authentication result: " + authentication.isAuthenticated());
-        System.out.println("Authorities: " + authentication.getAuthorities());
-        return "Bearer " + jwtToken;
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setMessage("Bearer " + jwtToken);
+        User user = userService.getOneUserByUserName(userRequest.getUserName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        authResponse.setUserId(user.getId());
+        return authResponse;
     }
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<AuthResponse> register(@RequestBody UserRequest userRequest) {
+        AuthResponse authResponse = new AuthResponse();
         if(userService.getOneUserByUserName(userRequest.getUserName()).isEmpty()){
             User user = new User();
             user.setUserName(userRequest.getUserName());
             user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
             userService.saveOneUser(user);
-            return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
+            authResponse.setMessage("User created successfully");
+            return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>("User already exists", HttpStatus.BAD_REQUEST);
+        authResponse.setMessage("User already exists");
+        return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
     }
 }

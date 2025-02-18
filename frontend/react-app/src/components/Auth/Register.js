@@ -1,9 +1,12 @@
 import React from 'react';
 import { Input, Button, Container } from 'semantic-ui-react';
+import AuthService from '../../services/AuthService';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const navigate = useNavigate();
 
     const handleUsername = (event) => {
         setUsername(event.target.value);
@@ -13,10 +16,26 @@ function Register() {
         setPassword(event.target.value);
     };
 
-    const handleRegister = () => {
-        console.log('Username:', username);
-        console.log('Password:', password);
+    const registerData = {
+        "userName": username,
+        "password": password
     };
+
+    const handleRegister = async () => {
+            try {
+                const authService = new AuthService();
+                const response = await authService.register(registerData);
+                console.log("Register successful:", response.data);
+                //const token = response.data.message.split(' ')[1];
+                //localStorage.setItem('token', token);
+                navigate('/login');
+            } catch (error) {
+                console.error("Register failed:", error.response ? error.response.data : error.message);
+            }
+    
+            
+        };
+
     return (
         <Container className="register-container"
             style={{
