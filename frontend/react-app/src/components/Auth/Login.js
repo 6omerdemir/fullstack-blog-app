@@ -1,11 +1,12 @@
 import React from 'react';
-import { Input, Button, Container } from 'semantic-ui-react';
+import { Input, Button, Container, Message } from 'semantic-ui-react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../../services/AuthService';
 
 function Login() {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [error, setError] = React.useState('');
     const navigate = useNavigate();
 
     const handleUsername = (event) => {
@@ -25,21 +26,18 @@ function Login() {
         try {
             const authService = new AuthService();
             const response = await authService.login(loginData);
-            const {message, userId} = response.data;
+            const { message, userId } = response.data;
             const token = message.split(' ')[1];
 
             localStorage.setItem('token', token);
             localStorage.setItem('userId', userId);
             localStorage.setItem('username', username);
 
-            console.log("Login successful:", response.data);
-
             navigate('/');
         } catch (error) {
-            console.error("Login failed:", error.response ? error.response.data : error.message);
+            const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+            setError(errorMessage);
         }
-
-        
     };
 
     return (
@@ -75,6 +73,13 @@ function Login() {
                     border: '1px solid #2185d0',
                 }}
             />
+
+            {error && (
+                <Message negative style={{ width: '40%', marginBottom: '20px' }}>
+                    <Message.Header>Login Failed</Message.Header>
+                    <p>{error}</p>
+                </Message>
+            )}
 
             <Button primary size="large" onClick={handleLogin}>Continue</Button>
             <hr style={{
