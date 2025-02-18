@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem, Menu, Button } from 'semantic-ui-react';
+import { MenuItem, Menu, Button, Dropdown } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
@@ -28,7 +28,7 @@ const Navbar = () => {
         >
           Write
         </Button>
-        <Button
+        {localStorage.getItem('userId') == null ? (<Button
           style={{
             border: '2px solid #4287f5',
             color: 'white',
@@ -37,7 +37,20 @@ const Navbar = () => {
           onClick={() => navigate(`/login`)} 
         >
           Sign In
-        </Button>
+        </Button>) : (<Dropdown
+          button
+          text='Options'
+          style={{
+            border: '2px solid #4287f5',
+            color: 'white',
+            backgroundColor: '#4287f5',
+          }}
+        >
+          <Dropdown.Menu>
+            <Dropdown.Item text = "Logout"/>
+          </Dropdown.Menu>
+        </Dropdown>) }
+        
       </Menu.Menu>
     </Menu>
   );
