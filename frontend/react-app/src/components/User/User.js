@@ -19,7 +19,7 @@ function User() {
 
     return (
         <div>
-            <h1>User Details</h1>
+            <h1>{user.userName}</h1>
             {user ? (
                 <Container className='user-container'>
                     <div>

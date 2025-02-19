@@ -1,10 +1,18 @@
 import React from 'react';
-import { MenuItem, Menu, Button, Dropdown } from 'semantic-ui-react';
+import { MenuItem, Menu, Button, Dropdown, Icon } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  let userId = 1; 
+  let userId = localStorage.getItem('userId');
+
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
+    navigate('/');
+  }
+
 
   return (
     <Menu>
@@ -26,6 +34,7 @@ const Navbar = () => {
           }}
           onClick={() => navigate(`/post/form/${userId}`)} 
         >
+          <Icon name='write' />
           Write
         </Button>
         {localStorage.getItem('userId') == null ? (<Button
@@ -39,7 +48,12 @@ const Navbar = () => {
           Sign In
         </Button>) : (<Dropdown
           button
-          text='Options'
+          text={
+            <>
+              <Icon name="setting" />
+              Options
+            </>
+          }
           style={{
             border: '2px solid #4287f5',
             color: 'white',
@@ -47,7 +61,7 @@ const Navbar = () => {
           }}
         >
           <Dropdown.Menu>
-            <Dropdown.Item text = "Logout"/>
+            <Dropdown.Item text = "Logout" onClick={handleLogout}/>
           </Dropdown.Menu>
         </Dropdown>) }
         

@@ -37,7 +37,10 @@ function Post() {
                 resize: 'none',
                 marginBottom: '20px',
             }}>
-                <Header as='h1'>{post.title}</Header>
+                <Header as='h1' size="medium">{post.title}</Header>
+            </div>
+            <div style = {{textAlign: 'center', fontSize: '18px'}}>
+                <p>Author: {post.user.userName}</p>
             </div>
             <div style={{
                 marginTop: '20px',

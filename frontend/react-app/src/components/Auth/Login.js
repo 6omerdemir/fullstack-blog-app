@@ -27,7 +27,7 @@ function Login() {
             const authService = new AuthService();
             const response = await authService.login(loginData);
             const { message, userId } = response.data;
-            const token = message.split(' ')[1];
+            const token = message;
 
             localStorage.setItem('token', token);
             localStorage.setItem('userId', userId);

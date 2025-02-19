@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Button } from 'semantic-ui-react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { useParams } from 'react-router-dom'; 
 import PostService from '../../services/PostService';
 
 function PostForm() {
-  const { userId } = useParams();
+  const userId = localStorage.getItem('userId');
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
 

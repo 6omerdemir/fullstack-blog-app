@@ -5,9 +5,7 @@ import {
     CardHeader,
     CardDescription,
     CardContent,
-    Card,
-    Icon,
-    Image,
+    Card
 } from 'semantic-ui-react';
 import PostService from '../../services/PostService';
 import './PostCard.css';
@@ -52,7 +50,7 @@ function PostCard({ userId }) {
         <div>
             {posts.map(post => (
                 <Card key={post.id} onClick={() => handlePostClick(post.id)} className="custom-card" style={{ cursor: 'pointer' }}>
-                    <Image src='/images/avatar/large/matthew.png' wrapped ui={false} />
+        
                     <CardContent>
                         <CardHeader>{post.userName}</CardHeader>
                         <CardMeta>

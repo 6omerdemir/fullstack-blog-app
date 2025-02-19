@@ -4,15 +4,16 @@ const instance = axios.create({
     baseURL: 'http://localhost:8080', 
     timeout: 5000, 
     headers: {
-        'Content-Type': 'application/json'
-    }
+        'Content-Type': 'application/json',
+    },
 });
-/*
+
+
 instance.interceptors.request.use(
     config => {
         const token = localStorage.getItem('token');
         if (token) {
-            config.headers.Authorization = `${token}`;
+            config.headers.Authorization = `${token}`; 
         }
         return config;
     },
@@ -20,6 +21,5 @@ instance.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-*/
 
-export default instance; 
+export default instance;

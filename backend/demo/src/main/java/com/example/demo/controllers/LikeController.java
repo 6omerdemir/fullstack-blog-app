@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/likes")
-@CrossOrigin
+
 public class LikeController {
     private LikeService likeService;
     public LikeController(LikeService likeService) {
