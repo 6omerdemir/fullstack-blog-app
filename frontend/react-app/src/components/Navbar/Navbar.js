@@ -6,6 +6,10 @@ const Navbar = () => {
   const navigate = useNavigate();
   let userId = localStorage.getItem('userId');
 
+  const handleProfile = () => {
+    navigate(`/users/${userId}`);
+  }
+
   const handleLogout = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('username');
@@ -51,7 +55,7 @@ const Navbar = () => {
           text={
             <>
               <Icon name="setting" />
-              Options
+              {localStorage.getItem('username')}
             </>
           }
           style={{
@@ -61,7 +65,8 @@ const Navbar = () => {
           }}
         >
           <Dropdown.Menu>
-            <Dropdown.Item text = "Logout" onClick={handleLogout}/>
+            <Dropdown.Item text = "Profile" onClick={handleProfile}/>
+            <Dropdown.Item text = "Logout" onClick={handleLogout}/>           
           </Dropdown.Menu>
         </Dropdown>) }
         

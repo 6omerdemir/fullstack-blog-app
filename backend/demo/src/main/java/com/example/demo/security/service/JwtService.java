@@ -19,7 +19,7 @@ public class JwtService {
 
     // Replace this with a secure key in a real application, ideally fetched from environment variables
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
-    public long EXPIRATION_TIME = 1000 * 60 * 600;
+    public long EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; //7 gün
     // Generate token with given username
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
