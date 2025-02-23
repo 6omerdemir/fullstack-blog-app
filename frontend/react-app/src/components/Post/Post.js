@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Header, Dropdown } from 'semantic-ui-react';
 import PostService from '../../services/PostService';
 import Comments from '../Comment/Comments';
@@ -9,6 +9,7 @@ function Post() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [post, setPost] = useState(null);
     const { postId } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         let postService = new PostService();
@@ -38,13 +39,22 @@ function Post() {
             });
     }
 
+    const handleEdit = () => {
+        navigate(`/post/form/${postId}`, { 
+            state: { 
+                title: post.title, 
+                text: post.text 
+            } 
+        });
+    };
+
     return (
         <Container style={{ marginTop: '50px', width: '50%' }}>
-            {localStorage.getItem('userId') == post.user.id && (
+            {localStorage.getItem('userId') === String(post.user.id) && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <Dropdown icon="edit">
                         <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="Edit" onClick={() => console.log('Edit clicked')} />
+                            <Dropdown.Item icon="edit" text="Edit" onClick={handleEdit} />
                             <Dropdown.Item icon="trash" text="Delete" onClick={handleDelete} />
                         </Dropdown.Menu>
                     </Dropdown>

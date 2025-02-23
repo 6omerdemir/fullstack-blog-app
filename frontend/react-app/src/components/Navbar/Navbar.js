@@ -19,7 +19,14 @@ const Navbar = () => {
 
 
   return (
-    <Menu>
+    <Menu
+    style={{
+      position: 'fixed', 
+      top: 0,          
+      width: '100%',   
+      zIndex: 1000,   
+      margin: 0,     
+    }}>
       <MenuItem header>BLOG</MenuItem>
       <MenuItem
         name='home'
@@ -36,7 +43,7 @@ const Navbar = () => {
             color: 'green',
             backgroundColor: 'transparent',
           }}
-          onClick={() => navigate(`/post/form/${userId}`)} 
+          onClick={() => navigate(`/post/form`)} 
         >
           <Icon name='write' />
           Write

@@ -1,12 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
 import User from './components/User/User';
 import Post from './components/Post/Post';
 import Register from './components/Auth/Register';
-import 'semantic-ui-react';
-import 'semantic-ui-css/semantic.min.css'; 
+import 'semantic-ui-css/semantic.min.css';
 import PostForm from './components/Post/PostForm';
 import Login from './components/Auth/Login';
 
@@ -15,14 +14,17 @@ function App() {
     <Router>
       <div>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/posts/:postId" element={<Post />} />
-          <Route path="/users/:userId" element={<User />} />
-          <Route path="/post/form/:userId" element={<PostForm />} />
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<Register/>}/>
-        </Routes>
+        <div style={{ marginTop: '50px' }}> 
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/posts/:postId" element={<Post />} />
+            <Route path="/users/:userId" element={<User />} />
+            <Route path="/post/form" element={<PostForm />} />
+            <Route path="/post/form/:postId" element={<PostForm />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
