@@ -1,133 +1,136 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Comment, Form, Button, Header, Segment } from 'semantic-ui-react';
 import CommentService from '../../services/CommentService';
-import { useParams } from 'react-router-dom';
-import {
-    Header,
-    CommentText,
-    CommentMetadata,
-    CommentGroup,
-    CommentContent,
-    CommentAvatar,
-    CommentActions,
-    CommentAction,
-    CommentAuthor,
-    FormTextArea,
-    Button,
-    Comment,
-    Form,
-} from 'semantic-ui-react';
-function Comments() {
-    const {postId, userId} = useParams();
-    const [text, setText] = useState('');
-    const handleAddReply = async () => {
-        if (!userId) {
-            console.error('User ID is missing');
+
+function Comments({ postId }) {
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const currentUserId = parseInt(localStorage.getItem('userId'), 10);
+
+    useEffect(() => {
+        const commentService = new CommentService();
+        setLoading(true);
+        commentService.getCommentsByPostId(postId)
+            .then(result => {
+                console.log(`Comments for post ${postId}:`, result.data);
+                setComments(result.data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Comments yükleme hatası:', err);
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [postId]);
+
+    const handleAddReply = () => {
+        if (!currentUserId) {
+            alert('Please log in to add a comment!');
+            return;
+        }
+        if (!newComment.trim()) {
+            alert('Comment cannot be empty!');
             return;
         }
 
+        const commentService = new CommentService();
         const commentData = {
-            userId,
-            postId,
-            text,
+            userId: currentUserId,
+            postId: parseInt(postId, 10),
+            text: newComment,
         };
 
-        try {
-            const commentService = new CommentService();
-            const response = await commentService.createOneComment(commentData);
-            console.log('Comment created:', response.data);
-            setText('');
-        } catch (error) {
-            console.error('Error creating post:', error);
-        }
+        setLoading(true);
+        commentService.createOneComment(commentData)
+            .then(result => {
+                console.log('Comment created:', result.data);
+                setComments([...comments, result.data]);
+                setNewComment('');
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error creating comment:', error.response?.data || error.message);
+                setError(error.response?.data?.message || error.message);
+                setLoading(false);
+            });
     };
+
+    const handleReplyClick = (userName) => {
+        setNewComment(`@${userName} `);
+    };
+
+    if (error) return <div>Error: {error}</div>;
+    if (loading) return <div>Loading comments...</div>;
+
     return (
-        <div>
-            <div>
-                <CommentGroup>
-                    <Header as='h3' dividing>
-                        Comments
-                    </Header>
+        <Segment>
+            <Comment.Group>
+                <Header as="h3" dividing>
+                    Comments
+                </Header>
+                {comments.length === 0 ? (
+                    <p>No comments yet.</p>
+                ) : (
+                    comments.map(comment => (
+                        <Comment key={comment.id}>
+                            <div
+                                style={{
+                                    backgroundColor: '#2185d0',
+                                    color: 'black',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    fontSize: '1.5rem',
+                                    fontWeight: 'bold',
+                                    width: '40px',
+                                    height: '40px',
+                                    borderRadius: '50%',
+                                    float: 'left',
+                                    marginRight: '10px',
+                                }}
+                            >
+                                {comment.user?.userName?.charAt(0)?.toUpperCase() || 'U'}
+                            </div>
+                            <Comment.Content>
+                                <Comment.Author as="a">{comment.user?.userName || 'Unknown'}</Comment.Author>
+                                <Comment.Metadata>
+                                    <div>{new Date().toLocaleString()}</div>
+                                </Comment.Metadata>
+                                <Comment.Text>{comment.text}</Comment.Text>
+                                <Comment.Actions
+                                    style={{
+                                        marginLeft: '50px',
+                                    }}
+                                >
+                                    <Comment.Action onClick={() => handleReplyClick(comment.user?.userName || 'Unknown')}>
+                                        Reply
+                                    </Comment.Action>
+                                </Comment.Actions>
+                            </Comment.Content>
+                        </Comment>
+                    ))
+                )}
 
-                    <Comment>
-                        <Comment.Avatar
-                            style={{
-                                backgroundColor: '#2185d0',
-                                color: 'white',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                fontSize: '1.2rem',
-                                fontWeight: 'bold',
-                                width: '40px',
-                                height: '40px',
-                            }}
-                        >
-                            M
-                        </Comment.Avatar>
-                        <CommentContent>
-                            <CommentAuthor as='a'>Matt</CommentAuthor>
-                            <CommentMetadata>
-                                <div>Today at 5:42PM</div>
-                            </CommentMetadata>
-                            <CommentText>How artistic!</CommentText>
-                            <CommentActions>
-                                <CommentAction>Reply</CommentAction>
-                            </CommentActions>
-                        </CommentContent>
-                    </Comment>
-
-                    <Comment>
-                        <CommentAvatar src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
-                        <CommentContent>
-                            <CommentAuthor as='a'>Elliot Fu</CommentAuthor>
-                            <CommentMetadata>
-                                <div>Yesterday at 12:30AM</div>
-                            </CommentMetadata>
-                            <CommentText>
-                                <p>This has been very useful for my research. Thanks as well!</p>
-                            </CommentText>
-                            <CommentActions>
-                                <CommentAction>Reply</CommentAction>
-                            </CommentActions>
-                        </CommentContent>
-                        <CommentGroup>
-                            <Comment>
-                                <CommentAvatar src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
-                                <CommentContent>
-                                    <CommentAuthor as='a'>Jenny Hess</CommentAuthor>
-                                    <CommentMetadata>
-                                        <div>Just now</div>
-                                    </CommentMetadata>
-                                    <CommentText>Elliot you are always so right :)</CommentText>
-                                    <CommentActions>
-                                        <CommentAction>Reply</CommentAction>
-                                    </CommentActions>
-                                </CommentContent>
-                            </Comment>
-                        </CommentGroup>
-                    </Comment>
-
-                    <Comment>
-                        <CommentAvatar src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
-                        <CommentContent>
-                            <CommentAuthor as='a'>Joe Henderson</CommentAuthor>
-                            <CommentMetadata>
-                                <div>5 days ago</div>
-                            </CommentMetadata>
-                            <CommentText>Dude, this is awesome. Thanks so much</CommentText>
-                            <CommentActions>
-                                <CommentAction>Reply</CommentAction>
-                            </CommentActions>
-                        </CommentContent>
-                    </Comment>
-
-                    <Form reply>
-                        <FormTextArea />
-                        <Button content='Add Reply' labelPosition='left' icon='edit' primary onClick={handleAddReply} />
-                    </Form>
-                </CommentGroup>
-            </div>
-        </div>
+                <Form reply>
+                    <Form.TextArea
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        placeholder="Add a comment..."
+                    />
+                    <Button
+                        content="Add Comment"
+                        labelPosition="left"
+                        icon="edit"
+                        primary
+                        onClick={handleAddReply}
+                        disabled={loading || !currentUserId}
+                    />
+                </Form>
+            </Comment.Group>
+        </Segment>
     );
 }
+
 export default Comments;

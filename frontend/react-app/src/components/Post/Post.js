@@ -10,6 +10,7 @@ function Post() {
     const [post, setPost] = useState(null);
     const { postId } = useParams();
     const navigate = useNavigate();
+    const currentUserId = localStorage.getItem('userId');
 
     useEffect(() => {
         let postService = new PostService();
@@ -86,7 +87,7 @@ function Post() {
                 <p>{post.text}</p>
             </div>
             <div>
-                <Comments postId={postId} userId={1} />
+                <Comments postId={postId} userId={currentUserId} />
             </div>
         </Container>
     );

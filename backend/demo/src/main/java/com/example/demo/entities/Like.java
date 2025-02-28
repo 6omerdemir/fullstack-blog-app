@@ -7,8 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-//@Data
-@Table(name = "p_like")
+@Table(name = "p_like", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}))
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

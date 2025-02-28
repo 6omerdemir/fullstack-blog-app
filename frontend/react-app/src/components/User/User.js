@@ -1,41 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import UserService from '../../services/UserService';
-import './User.css';
 import PostCard from '../PostCard/PostCard';
 import { Container } from 'semantic-ui-react';
 
 function User() {
-    const { userId } = useParams();
+    const userId = localStorage.getItem('userId');
     const [user, setUser] = useState(null);
     
     useEffect(() => {
         const userService = new UserService();
         userService.getOneUserById(userId)
             .then(response => {
+                console.log('User data:', response.data); 
                 setUser(response.data);
+            })
+            .catch(error => {
+                console.error('User yükleme hatası:', error);
             });
     }, [userId]);
 
+    if (!user) {
+        return <p>Loading...</p>; 
+    }
+
     return (
-        <div>
+        <div style={{ align: 'center', width: '100%' }}>
             <h1>{user.userName}</h1>
-            {user ? (
-                <Container className='user-container'>
-                    <div>
-                    <ul>
+            <Container style={{ width: '100%' }}>
+                <div style={{textAlign: 'center'}}>
+                    <ul style={{ listStyle: 'none', padding: 0 }}>
                         <li>User ID: {user.id}</li>
                         <li>Username: {user.userName}</li>
                     </ul>           
                 </div>
 
-                <div>
-                    <PostCard userId={userId} />
+                {/* PostCard'ı ortalamak için bu div'i flex container yapıyoruz */}
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ width: 'fit-content' }}>
+                        <PostCard userId={userId} />
+                    </div>
                 </div>
-                </Container>             
-            ) : (
-                <p>Loading...</p>
-            )}
+            </Container>
         </div>
     );
 }
