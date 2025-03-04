@@ -35,7 +35,6 @@ function User() {
                     </ul>           
                 </div>
 
-                {/* PostCard'ı ortalamak için bu div'i flex container yapıyoruz */}
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div style={{ width: 'fit-content' }}>
                         <PostCard userId={userId} />

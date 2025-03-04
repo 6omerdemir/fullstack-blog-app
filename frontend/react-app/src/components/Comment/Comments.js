@@ -61,6 +61,22 @@ function Comments({ postId }) {
         setNewComment(`@${userName} `);
     };
 
+    const handleDeleteComment = (commentId) => {
+        const commentService = new CommentService();
+        setLoading(true);
+        commentService.deleteOneCommentById(commentId)
+            .then(() => {
+                console.log(`Comment ${commentId} deleted`);
+                setComments(comments.filter(comment => comment.id !== commentId));
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error deleting comment:', error.response?.data || error.message);
+                setError(error.response?.data?.message || error.message);
+                setLoading(false);
+            });
+    };
+
     if (error) return <div>Error: {error}</div>;
     if (loading) return <div>Loading comments...</div>;
 
@@ -101,12 +117,18 @@ function Comments({ postId }) {
                                 <Comment.Text>{comment.text}</Comment.Text>
                                 <Comment.Actions
                                     style={{
+                                        textAlign: 'left', // Reply ve Delete sağda
                                         marginLeft: '50px',
                                     }}
                                 >
                                     <Comment.Action onClick={() => handleReplyClick(comment.user?.userName || 'Unknown')}>
                                         Reply
                                     </Comment.Action>
+                                    {comment.user?.id === currentUserId && (
+                                        <Comment.Action onClick={() => handleDeleteComment(comment.id)}>
+                                            Delete
+                                        </Comment.Action>
+                                    )}
                                 </Comment.Actions>
                             </Comment.Content>
                         </Comment>
