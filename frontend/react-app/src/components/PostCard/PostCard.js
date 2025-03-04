@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    CardMeta,
-    CardHeader,
-    CardDescription,
-    CardContent,
-    Card,
-    Button,
-} from 'semantic-ui-react';
+import { CardMeta, CardHeader, CardDescription, CardContent, Card, Button } from 'semantic-ui-react';
 import PostService from '../../services/PostService';
 import LikeService from '../../services/LikeService';
 import './PostCard.css';
@@ -23,8 +16,7 @@ function PostCard({ userId }) {
         const postService = new PostService();
         const likeService = new LikeService();
 
-        console.log('Current User ID:', currentUserId); // Debug: Kullanıcı ID'si
-        console.log(localStorage.getItem('userId') + "localStorage.getItem('userId') şeklinde yazılmış log."); // Debug: Local Storage'dan kullanıcı ID'si
+        console.log('Current User ID:', currentUserId);
         postService.getAllPosts(userId)
             .then(result => {
                 const fetchedPosts = result.data;
@@ -32,10 +24,9 @@ function PostCard({ userId }) {
                     likeService.getLikesByPostId(post.id)
                         .then(likeRes => {
                             const likes = likeRes.data;
-                            console.log('Likes Raw Data:', likes); // Ham beğeni verisi
+                            console.log(`Post ${post.id} - Likes Full Data:`, JSON.stringify(likes));
                             const likeCount = likes.length;
-                            const isLiked = likes.some(like => parseInt(like.userId, 10) === currentUserId); // Karşılaştırma
-                            console.log(`Post ${post.id} - LikeCount: ${likeCount}, isLiked: ${isLiked}`);
+                            const isLiked = likes.some(like => like.user?.id === currentUserId); 
                             return { ...post, likes, likeCount, isLiked };
                         })
                         .catch(err => {
@@ -131,12 +122,12 @@ function PostCard({ userId }) {
                     {currentUserId && (
                         <CardContent extra>
                             <Button
-                                color={post.isLiked ? 'red' : 'white'}
+                                color={post.isLiked ? 'red' : 'grey'} 
                                 content="Like"
                                 icon="heart"
                                 label={{
                                     basic: true,
-                                    color: 'white',
+                                    color: 'grey',
                                     pointing: 'left',
                                     content: post.likeCount,
                                 }}
