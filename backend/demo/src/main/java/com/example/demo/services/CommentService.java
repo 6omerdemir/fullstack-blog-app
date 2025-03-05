@@ -8,6 +8,7 @@ import com.example.demo.entities.User;
 import com.example.demo.repos.CommentRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +52,7 @@ public class CommentService {
             newComment.setText(commentCreateRequest.getText());
             newComment.setUser(user);
             newComment.setPost(post);
+            newComment.setCreateDate(new Date());
             return commentRepository.save(newComment);
         }else
             return null;

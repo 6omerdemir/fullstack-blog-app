@@ -1,10 +1,13 @@
 package com.example.demo.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.Date;
 
 @Entity
 //@Data
@@ -24,13 +27,25 @@ public class Post {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createDate;
+
     public Post(){};
 
-    public Post(Long id, String title, String text, User user) {
+    public Post(Long id, String title, String text, User user, Date createDate) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.user = user;
+        this.createDate = createDate;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public Long getId() {

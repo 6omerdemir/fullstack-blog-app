@@ -112,12 +112,12 @@ function Comments({ postId }) {
                             <Comment.Content>
                                 <Comment.Author as="a">{comment.user?.userName || 'Unknown'}</Comment.Author>
                                 <Comment.Metadata>
-                                    <div>{new Date().toLocaleString()}</div>
+                                    <div>{comment.createDate ? new Date(comment.createDate).toLocaleString() : 'Unknown'}</div>
                                 </Comment.Metadata>
                                 <Comment.Text>{comment.text}</Comment.Text>
                                 <Comment.Actions
                                     style={{
-                                        textAlign: 'left', // Reply ve Delete sağda
+                                        textAlign: 'left',
                                         marginLeft: '50px',
                                     }}
                                 >

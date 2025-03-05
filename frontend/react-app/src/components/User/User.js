@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import UserService from '../../services/UserService';
 import PostCard from '../PostCard/PostCard';
 import { Container } from 'semantic-ui-react';
@@ -30,10 +29,10 @@ function User() {
             <Container style={{ width: '100%' }}>
                 <div style={{textAlign: 'center'}}>
                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <li>User ID: {user.id}</li>
-                        <li>Username: {user.userName}</li>
+                        <li>Joined: {user.createDate ? new Date(user.createDate).toLocaleDateString() : 'Unknown'}</li>
                     </ul>           
                 </div>
+                
 
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div style={{ width: 'fit-content' }}>

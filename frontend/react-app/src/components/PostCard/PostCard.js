@@ -20,13 +20,14 @@ function PostCard({ userId }) {
         postService.getAllPosts(userId)
             .then(result => {
                 const fetchedPosts = result.data;
+                console.log('Fetched Posts:', JSON.stringify(fetchedPosts));
                 const postPromises = fetchedPosts.map(post =>
                     likeService.getLikesByPostId(post.id)
                         .then(likeRes => {
                             const likes = likeRes.data;
                             console.log(`Post ${post.id} - Likes Full Data:`, JSON.stringify(likes));
                             const likeCount = likes.length;
-                            const isLiked = likes.some(like => like.user?.id === currentUserId); 
+                            const isLiked = likes.some(like => like.user?.id === currentUserId);
                             return { ...post, likes, likeCount, isLiked };
                         })
                         .catch(err => {
@@ -115,14 +116,16 @@ function PostCard({ userId }) {
                     <CardContent>
                         <CardHeader>{post.userName}</CardHeader>
                         <CardMeta>
-                            <span className="date">Joined in 2025</span>
+                            <span className="date">
+                                {post.createDate ? new Date(post.createDate).toLocaleString() : 'Unknown date'}
+                            </span>
                         </CardMeta>
                         <CardDescription>{post.title}</CardDescription>
                     </CardContent>
                     {currentUserId && (
                         <CardContent extra>
                             <Button
-                                color={post.isLiked ? 'red' : 'grey'} 
+                                color={post.isLiked ? 'red' : 'grey'}
                                 content="Like"
                                 icon="heart"
                                 label={{

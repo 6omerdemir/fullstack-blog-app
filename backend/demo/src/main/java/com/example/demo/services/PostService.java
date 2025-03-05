@@ -9,6 +9,7 @@ import com.example.demo.mapper.ModelMapperService;
 import com.example.demo.repos.PostRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -49,6 +50,7 @@ public class PostService {
         toSave.setText(newPostRequest.getText());
         toSave.setTitle(newPostRequest.getTitle());
         toSave.setUser(user);
+        toSave.setCreateDate(new Date());
         return postRepository.save(toSave);
     }
 

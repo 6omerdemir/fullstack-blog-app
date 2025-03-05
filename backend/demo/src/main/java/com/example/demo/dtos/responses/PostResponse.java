@@ -1,21 +1,33 @@
 package com.example.demo.dtos.responses;
 
+import java.util.Date;
+
 public class PostResponse {
     private Long id;
     private Long userId;
     private String userName;
     private String title;
     private String text;
+    private Date createDate;
 
     public PostResponse() {
     };
 
-    public PostResponse(Long id, Long userId, String userName, String title, String text) {
+    public PostResponse(Long id, Long userId, String userName, String title, String text, Date createDate) {
         this.id = id;
         this.userId = userId;
         this.userName = userName;
         this.title = title;
         this.text = text;
+        this.createDate = createDate;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public Long getId() {
