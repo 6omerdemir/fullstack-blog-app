@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import { Comment, Form, Button, Header, Segment } from 'semantic-ui-react';
 import CommentService from '../../services/CommentService';
 
@@ -8,6 +9,7 @@ function Comments({ postId }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const currentUserId = parseInt(localStorage.getItem('userId'), 10);
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         const commentService = new CommentService();
@@ -77,6 +79,10 @@ function Comments({ postId }) {
             });
     };
 
+    const handleUserClick = (userId) => {
+        navigate(`/users/${userId}`);
+    };
+
     if (error) return <div>Error: {error}</div>;
     if (loading) return <div>Loading comments...</div>;
 
@@ -93,8 +99,8 @@ function Comments({ postId }) {
                         <Comment key={comment.id}>
                             <div
                                 style={{
-                                    backgroundColor: '#2185d0',
-                                    color: 'black',
+                                    backgroundColor: comment.user?.profileColor || '#ffffff',
+                                    color: "black",
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
@@ -107,10 +113,16 @@ function Comments({ postId }) {
                                     marginRight: '10px',
                                 }}
                             >
-                                {comment.user?.userName?.charAt(0)?.toUpperCase() || 'U'}
+                                {comment.user?.userName?.charAt(0) || 'U'}
                             </div>
                             <Comment.Content>
-                                <Comment.Author as="a">{comment.user?.userName || 'Unknown'}</Comment.Author>
+                                <Comment.Author 
+                                    as="a" 
+                                    onClick={() => handleUserClick(comment.user?.id)} 
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    {comment.user?.userName || 'Unknown'}
+                                </Comment.Author>
                                 <Comment.Metadata>
                                     <div>{comment.createDate ? new Date(comment.createDate).toLocaleString() : 'Unknown'}</div>
                                 </Comment.Metadata>

@@ -34,6 +34,8 @@ public class UserService {
             User foundUser = user.get();
             foundUser.setUserName(newUser.getUserName());
             foundUser.setPassword(newUser.getPassword());
+            foundUser.setProfileColor(newUser.getProfileColor());
+            foundUser.setHeaderColor(newUser.getHeaderColor());
             userRepository.save(foundUser);
             return foundUser;
         }else{

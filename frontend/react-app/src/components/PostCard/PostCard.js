@@ -5,7 +5,7 @@ import PostService from '../../services/PostService';
 import LikeService from '../../services/LikeService';
 import './PostCard.css';
 
-function PostCard({ userId }) {
+function PostCard({ userId, onPostsLoaded }) {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [posts, setPosts] = useState([]);
@@ -39,6 +39,7 @@ function PostCard({ userId }) {
                 Promise.all(postPromises)
                     .then(formattedPosts => {
                         setPosts(formattedPosts);
+                        if (onPostsLoaded) onPostsLoaded(formattedPosts);
                         setIsLoaded(true);
                     })
                     .catch(err => {
@@ -50,10 +51,15 @@ function PostCard({ userId }) {
                 setError(error);
                 setIsLoaded(true);
             });
-    }, [userId, currentUserId]);
+    }, [userId, currentUserId]); 
 
     const handlePostClick = (postId) => {
         navigate(`/posts/${postId}`);
+    };
+
+    const handleUserClick = (userId) => (e) => {
+        e.stopPropagation(); 
+        navigate(`/users/${userId}`);
     };
 
     const handleLikeClick = (postId, isLiked) => (e) => {
@@ -113,8 +119,15 @@ function PostCard({ userId }) {
                     className="custom-card"
                     style={{ cursor: 'pointer' }}
                 >
-                    <CardContent>
-                        <CardHeader>{post.userName}</CardHeader>
+                    <CardContent style={{ backgroundColor: post.user?.headerColor || '#ffffff' }}>
+                        <CardHeader>
+                            <span 
+                                onClick={handleUserClick(post.userId)} 
+                                style={{ cursor: 'pointer', color: '#4183c4' }}
+                            >
+                                {post.userName}
+                            </span>
+                        </CardHeader>
                         <CardMeta>
                             <span className="date">
                                 {post.createDate ? new Date(post.createDate).toLocaleString() : 'Unknown date'}

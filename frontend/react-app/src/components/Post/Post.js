@@ -25,6 +25,10 @@ function Post() {
             });
     }, [postId]);
 
+    const handleUserClick = (userId) => {
+        navigate(`/users/${userId}`);
+    };
+
     if (error) return <div>Error: {error.message}</div>;
     if (!isLoaded) return <div>Loading...</div>;
     if (!post) return <div>Post not found</div>;
@@ -38,7 +42,7 @@ function Post() {
             .catch(error => {
                 console.log(error);
             });
-    }
+    };
 
     const handleEdit = () => {
         navigate(`/post/form/${postId}`, { 
@@ -73,7 +77,14 @@ function Post() {
                 <Header as='h1' size="medium">{post.title}</Header>
             </div>
             <div style={{ textAlign: 'center', fontSize: '18px' }}>
-                <p>Author: {post.user.userName}</p>
+                <p>
+                    Author: <span 
+                        onClick={() => handleUserClick(post.user.id)} 
+                        style={{ cursor: 'pointer', color: '#4183c4' }}
+                    >
+                        {post.user.userName}
+                    </span>
+                </p>
             </div>
             <div style={{
                 marginTop: '20px',

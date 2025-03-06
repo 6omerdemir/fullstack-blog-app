@@ -24,6 +24,26 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
+    private String profileColor;
+
+    private String headerColor;
+
+    public String getProfileColor() {
+        return profileColor;
+    }
+
+    public void setProfileColor(String profileColor) {
+        this.profileColor = profileColor;
+    }
+
+    public String getHeaderColor() {
+        return headerColor;
+    }
+
+    public void setHeaderColor(String headerColor) {
+        this.headerColor = headerColor;
+    }
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -64,12 +84,14 @@ public class User {
         this.password = password;
     }
 
-    public User(Long id, String userName, String password, String roles, Date createDate) {
+    public User(Long id, String userName, String password, String roles, Date createDate, String profileColor, String headerColor) {
         this.id = id;
         this.userName = userName;
         this.password = password;
         this.roles = roles;
         this.createDate = createDate;
+        this.profileColor = profileColor;
+        this.headerColor = headerColor;
     }
 
     public User(){};

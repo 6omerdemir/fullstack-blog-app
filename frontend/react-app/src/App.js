@@ -14,7 +14,7 @@ function App() {
     <Router>
       <div>
         <Navbar />
-        <div style={{ marginTop: '50px' }}> 
+        <div style={{ marginTop: '40px' }}> 
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/posts/:postId" element={<Post />} />
