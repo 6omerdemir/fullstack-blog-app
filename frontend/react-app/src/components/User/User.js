@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import UserService from '../../services/UserService';
 import PostCard from '../PostCard/PostCard';
-import { Container, Dropdown, Icon, Modal, Button } from 'semantic-ui-react'; 
+import { Container, Icon, Modal, Button } from 'semantic-ui-react';
 import { colorOptions } from '../Colors/Colors';
 
 function User() {
@@ -12,7 +12,8 @@ function User() {
     const [profileColor, setProfileColor] = useState('#FF5733');
     const [headerColor, setHeaderColor] = useState('#33FF57');
     const [posts, setPosts] = useState([]);
-    const [settingsOpen, setSettingsOpen] = useState(false); 
+    const [settingsOpen, setSettingsOpen] = useState(false);
+    const [selectedColorType, setSelectedColorType] = useState('profileColor');
 
     useEffect(() => {
         const userService = new UserService();
@@ -57,7 +58,7 @@ function User() {
     }
 
     const textColor = getContrast(headerColor);
-    const totalLikes = posts.reduce((sum, post) => sum + (post.likeCount || 0), 0);
+    const totalLikes = posts.reduce((sum, post) => sum + (Number(post.likeCount) || 0), 0);
 
     return (
         <div style={{ width: '100%' }}>
@@ -87,7 +88,6 @@ function User() {
                         </li>
                     </ul>
                 </div>
-                
                 {loggedInUserId === urlUserId && (
                     <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
                         <Icon 
@@ -99,29 +99,58 @@ function User() {
                         <Modal
                             open={settingsOpen}
                             onClose={() => setSettingsOpen(false)}
-                            size="tiny" 
+                            size="tiny"
                         >
-                            <Modal.Header>Profile Color Options</Modal.Header>
+                            <Modal.Header>Color Settings</Modal.Header>
                             <Modal.Content>
-                            
-                                <Dropdown
-                                    placeholder="Select Profile Color"
-                                    selection
-                                    options={colorOptions}
-                                    value={profileColor}
-                                    onChange={(e, { value }) => handleColorChange('profileColor', value)}
-                                    fluid
-                                    style={{ marginBottom: '10px' }}
-                                />
-            
-                                <Dropdown
-                                    placeholder="Select Header Color"
-                                    selection
-                                    options={colorOptions}
-                                    value={headerColor}
-                                    onChange={(e, { value }) => handleColorChange('headerColor', value)}
-                                    fluid
-                                />
+                                <div style={{ 
+                                    textAlign: 'center',
+                                    justifyContent: 'center', 
+                                    marginBottom: '20px' 
+                                }}>
+                                    <h3 
+                                        onClick={() => setSelectedColorType('profileColor')} 
+                                        style={{ 
+                                            cursor: 'pointer', 
+                                            color: selectedColorType === 'profileColor' ? '#4183c4' : 'black',
+                                            fontWeight: selectedColorType === 'profileColor' ? 'bold' : 'normal'
+                                        }}
+                                    >
+                                        Profile Color
+                                    </h3>
+                                    <h3 
+                                        onClick={() => setSelectedColorType('headerColor')} 
+                                        style={{ 
+                                            cursor: 'pointer', 
+                                            color: selectedColorType === 'headerColor' ? '#4183c4' : 'black',
+                                            fontWeight: selectedColorType === 'headerColor' ? 'bold' : 'normal'
+                                        }}
+                                    >
+                                        Header Color
+                                    </h3>
+                                </div>
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(4, 1fr)',
+                                    gap: '10px',
+                                }}>
+                                    {colorOptions.map(color => (
+                                        <div
+                                            key={color}
+                                            style={{
+                                                backgroundColor: color,
+                                                width: '100px',
+                                                height: '100px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                border: (selectedColorType === 'profileColor' && profileColor === color) || 
+                                                        (selectedColorType === 'headerColor' && headerColor === color) 
+                                                        ? '2px solid black' : 'none'
+                                            }}
+                                            onClick={() => handleColorChange(selectedColorType, color)}
+                                        />
+                                    ))}
+                                </div>
                             </Modal.Content>
                             <Modal.Actions>
                                 <Button onClick={() => setSettingsOpen(false)} primary>
