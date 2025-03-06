@@ -10,8 +10,7 @@ function PostCard({ userId, onPostsLoaded }) {
     const [isLoaded, setIsLoaded] = useState(false);
     const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
-    const currentUserId = parseInt(localStorage.getItem('userId'), 10);
-
+    const currentUserId = localStorage.getItem('userId') ? parseInt(localStorage.getItem('userId'), 10) : null;
     useEffect(() => {
         const postService = new PostService();
         const likeService = new LikeService();
@@ -65,7 +64,7 @@ function PostCard({ userId, onPostsLoaded }) {
     const handleLikeClick = (postId, isLiked) => (e) => {
         e.stopPropagation();
         if (!currentUserId) {
-            alert('Please log in to like a post!');
+            alert('Please log in to like!');
             return;
         }
 
@@ -135,7 +134,6 @@ function PostCard({ userId, onPostsLoaded }) {
                         </CardMeta>
                         <CardDescription>{post.title}</CardDescription>
                     </CardContent>
-                    {currentUserId && (
                         <CardContent extra>
                             <Button
                                 color={post.isLiked ? 'red' : 'grey'}
@@ -150,7 +148,6 @@ function PostCard({ userId, onPostsLoaded }) {
                                 onClick={handleLikeClick(post.id, post.isLiked)}
                             />
                         </CardContent>
-                    )}
                 </Card>
             ))}
         </div>

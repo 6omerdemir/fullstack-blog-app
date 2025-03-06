@@ -44,12 +44,10 @@ function PostForm() {
         try {
             const postService = new PostService();
             if (postId) {
-                // Update mode
                 const response = await postService.updatePostById(postId, postData);
                 console.log('Post updated:', response.data);
                 navigate(`/posts/${postId}`); 
             } else {
-                // Create mode
                 const response = await postService.createPost(postData);
                 console.log('Post created:', response.data);
                 navigate('/'); 
