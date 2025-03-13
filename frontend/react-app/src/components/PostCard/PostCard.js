@@ -11,20 +11,20 @@ function PostCard({ userId, onPostsLoaded }) {
     const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
     const currentUserId = localStorage.getItem('userId') ? parseInt(localStorage.getItem('userId'), 10) : null;
+
     useEffect(() => {
         const postService = new PostService();
         const likeService = new LikeService();
 
-        console.log('Current User ID:', currentUserId);
         postService.getAllPosts(userId)
             .then(result => {
                 const fetchedPosts = result.data;
-                console.log('Fetched Posts:', JSON.stringify(fetchedPosts));
-                const postPromises = fetchedPosts.map(post =>
+                const sortedPosts = fetchedPosts.sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
+                
+                const postPromises = sortedPosts.map(post =>
                     likeService.getLikesByPostId(post.id)
                         .then(likeRes => {
                             const likes = likeRes.data;
-                            console.log(`Post ${post.id} - Likes Full Data:`, JSON.stringify(likes));
                             const likeCount = likes.length;
                             const isLiked = likes.some(like => like.user?.id === currentUserId);
                             return { ...post, likes, likeCount, isLiked };
@@ -50,21 +50,21 @@ function PostCard({ userId, onPostsLoaded }) {
                 setError(error);
                 setIsLoaded(true);
             });
-    }, [userId, currentUserId]); 
+    }, [userId, currentUserId]);
 
     const handlePostClick = (postId) => {
         navigate(`/posts/${postId}`);
     };
 
     const handleUserClick = (userId) => (e) => {
-        e.stopPropagation(); 
+        e.stopPropagation();
         navigate(`/users/${userId}`);
     };
 
     const handleLikeClick = (postId, isLiked) => (e) => {
         e.stopPropagation();
         if (!currentUserId) {
-            alert('Please log in to like!');
+            alert('Please log in to like a post!');
             return;
         }
 
@@ -103,6 +103,11 @@ function PostCard({ userId, onPostsLoaded }) {
         }
     };
 
+    const truncateText = (text, maxLength = 200) => {
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
+    };
+
     if (error) {
         return <div>Error: {error.message}</div>;
     } else if (!isLoaded) {
@@ -132,22 +137,26 @@ function PostCard({ userId, onPostsLoaded }) {
                                 {post.createDate ? new Date(post.createDate).toLocaleString() : 'Unknown date'}
                             </span>
                         </CardMeta>
-                        <CardDescription>{post.title}</CardDescription>
+                        <CardDescription style={{ whiteSpace: 'pre-wrap' }}>
+                            <strong>{post.title}</strong>
+                            <br /><br /> 
+                            <span style={{ fontWeight: 'lighter' }}>{truncateText(post.text)}</span>
+                        </CardDescription>
                     </CardContent>
-                        <CardContent extra>
-                            <Button
-                                color={post.isLiked ? 'red' : 'grey'}
-                                content="Like"
-                                icon="heart"
-                                label={{
-                                    basic: true,
-                                    color: 'grey',
-                                    pointing: 'left',
-                                    content: post.likeCount,
-                                }}
-                                onClick={handleLikeClick(post.id, post.isLiked)}
-                            />
-                        </CardContent>
+                    <CardContent extra>
+                        <Button
+                            color={post.isLiked ? 'red' : 'grey'}
+                            content="Like"
+                            icon="heart"
+                            label={{
+                                basic: true,
+                                color: 'grey',
+                                pointing: 'left',
+                                content: post.likeCount,
+                            }}
+                            onClick={handleLikeClick(post.id, post.isLiked)}
+                        />
+                    </CardContent>
                 </Card>
             ))}
         </div>

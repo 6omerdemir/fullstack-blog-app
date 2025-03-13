@@ -45,11 +45,11 @@ function Post() {
     };
 
     const handleEdit = () => {
-        navigate(`/post/form/${postId}`, { 
-            state: { 
-                title: post.title, 
-                text: post.text 
-            } 
+        navigate(`/post/form/${postId}`, {
+            state: {
+                title: post.title,
+                text: post.text
+            }
         });
     };
 
@@ -78,13 +78,18 @@ function Post() {
             </div>
             <div style={{ textAlign: 'center', fontSize: '18px' }}>
                 <p>
-                    Author: <span 
-                        onClick={() => handleUserClick(post.user.id)} 
+                    Author: <span
+                        onClick={() => handleUserClick(post.user.id)}
                         style={{ cursor: 'pointer', color: '#4183c4' }}
                     >
                         {post.user.userName}
                     </span>
                 </p>
+            </div>
+            <div style={{textAlign: 'center', fontSize: '16px'}}>
+                <span className="date" >
+                    {post.createDate ? new Date(post.createDate).toLocaleDateString() : 'Unknown date'}
+                </span>
             </div>
             <div style={{
                 marginTop: '20px',
@@ -94,6 +99,7 @@ function Post() {
                 outline: 'none',
                 resize: 'none',
                 marginBottom: '20px',
+                whiteSpace: 'pre-wrap'
             }}>
                 <p>{post.text}</p>
             </div>

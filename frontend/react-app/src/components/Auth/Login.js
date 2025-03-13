@@ -26,13 +26,13 @@ function Login() {
         try {
             const authService = new AuthService();
             const response = await authService.login(loginData);
-            const { message, userId } = response.data;
-            const token = message;
-
-            localStorage.setItem('token', token);
+            const { message, userId, accessToken, refreshToken } = response.data;
+    
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken); 
             localStorage.setItem('userId', userId);
-            localStorage.setItem('username', username);
-
+            localStorage.setItem('username', username); 
+    
             navigate('/');
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
