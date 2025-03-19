@@ -6,6 +6,7 @@ import com.example.demo.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,5 +44,11 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public void deleteOneUserById(@PathVariable Long userId){
         userService.deleteOneUserById(userId);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> searchUsers(@RequestParam("q") String userName ){
+        List<User> users = userService.searchUsers(userName);
+        return ResponseEntity.ok(users);
     }
 }

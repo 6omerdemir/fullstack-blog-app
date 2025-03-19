@@ -4,8 +4,10 @@ import com.example.demo.dtos.requests.PostCreateRequest;
 import com.example.demo.dtos.requests.PostUpdateRequest;
 import com.example.demo.dtos.responses.PostResponse;
 import com.example.demo.entities.Post;
+import com.example.demo.entities.User;
 import com.example.demo.mapper.ModelMapperService;
 import com.example.demo.services.PostService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,4 +46,10 @@ public class PostController {
     public void deleteOnePost(@PathVariable Long postId){
         postService.deleteOnePostById(postId);
 }
+
+@GetMapping("/search")
+    public ResponseEntity<List<Post>> searchPosts(@RequestParam("q") String title ){
+        List<Post> posts = postService.searchPosts(title);
+        return ResponseEntity.ok(posts);
+    }
 }

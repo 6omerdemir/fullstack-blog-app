@@ -9,6 +9,7 @@ import com.example.demo.mapper.ModelMapperService;
 import com.example.demo.repos.PostRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -68,5 +69,12 @@ public class PostService {
 
     public void deleteOnePostById(Long postId) {
         postRepository.deleteById(postId);
+    }
+
+    public List<Post> searchPosts(String title){
+        if (title == null || title.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        return postRepository.findByTitleContaining(title);
     }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { MenuItem, Menu, Button, Dropdown, Icon } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
+import SearchBar from '../SearchBar/SearchBar';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -33,13 +34,30 @@ const Navbar = () => {
                 width: '100%',
                 zIndex: 1000,
                 margin: 0,
+                display: 'flex', 
+                justifyContent: 'space-between',
+                alignItems: 'center', 
             }}
         >
-            <MenuItem header>BLOG</MenuItem>
-            <MenuItem
-                name='home'
-                onClick={() => navigate('/')}
-            />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <MenuItem header>BLOG</MenuItem>
+                <MenuItem
+                    name="home"
+                    onClick={() => navigate('/')}
+                />
+            </div>
+
+            <div
+                style={{
+                    position: 'absolute',
+                    left: '50%',
+                    transform: 'translateX(-50%)', 
+                    zIndex: 1001, 
+                }}
+            >
+                <SearchBar />
+            </div>
+
             <Menu.Menu position='right'>
                 <Button
                     style={{

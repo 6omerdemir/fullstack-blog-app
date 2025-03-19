@@ -20,4 +20,8 @@ getAllUsers() {
  deleteUserById(userId){
     return axios.delete(`/users/${userId}`)
 }
+
+searchUsers(query) {
+    return axios.get('/users/search', { params: { q: query } });
+}
 }
