@@ -13,15 +13,20 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class PostService {
     private PostRepository postRepository;
     private UserService userService;
     private ModelMapperService modelMapperService;
-    public PostService(PostRepository postRepository, UserService userService, ModelMapperService modelMapperService) {
+    private FollowService followService;
+
+    public PostService(PostRepository postRepository, UserService userService, ModelMapperService modelMapperService, FollowService followService) {
         this.postRepository = postRepository;
         this.userService = userService;
         this.modelMapperService = modelMapperService;
+        this.followService = followService;
     }
 
 
@@ -76,5 +81,16 @@ public class PostService {
             return Collections.emptyList();
         }
         return postRepository.findByTitleContaining(title);
+    }
+
+    public List<PostResponse> getFollowingUsersPosts(Long userId) {
+        // Get list of users that userId follows
+        List<User> followingUsers = followService.getFollowing(userId);
+        
+        // Get posts from all following users and map to PostResponse
+        return followingUsers.stream()
+                .flatMap(user -> postRepository.findByUserId(user.getId()).stream())
+                .map(p -> modelMapperService.forResponse().map(p, PostResponse.class))
+                .collect(Collectors.toList());
     }
 }

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import UserService from '../../services/UserService';
-import FollowService from '../../services/FollowService'; // Değişiklik: FollowService eklendi
+import FollowService from '../../services/FollowService';
 import PostCard from '../PostCard/PostCard';
-import { Container, Icon, Modal, Button } from 'semantic-ui-react';
+import { Container, Icon, Modal, Button, List } from 'semantic-ui-react';
 import { colorOptions } from '../Colors/Colors';
 
 function User() {
@@ -15,23 +15,53 @@ function User() {
     const [posts, setPosts] = useState([]);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [selectedColorType, setSelectedColorType] = useState('profileColor');
-    const [isFollowing, setIsFollowing] = useState(false); // Değişiklik: Takip durumu için state
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [followerCount, setFollowerCount] = useState(0);
+    const [followingCount, setFollowingCount] = useState(0);
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
+    const [showFollowModal, setShowFollowModal] = useState(false);
+    const [modalType, setModalType] = useState(''); // 'followers' or 'following'
+    const navigate = useNavigate();
 
     const userService = new UserService();
-    const followService = new FollowService(); // Değişiklik: FollowService instance’ı
+    const followService = new FollowService();
+
+    const fetchCounts = (userId) => {
+        // Fetch follower list
+        followService.getFollowers(userId)
+            .then(response => {
+                setFollowerCount(response.data.length);
+                setFollowers(response.data);
+            })
+            .catch(error => console.error('Follower yükleme hatası:', error));
+
+        // Fetch following list
+        followService.getFollowing(userId)
+            .then(response => {
+                setFollowingCount(response.data.length);
+                setFollowing(response.data);
+            })
+            .catch(error => console.error('Following yükleme hatası:', error));
+    };
 
     useEffect(() => {
         const idToFetch = urlUserId || loggedInUserId;
+        
+        // Fetch user data
         userService.getOneUserById(idToFetch)
             .then(response => {
-                console.log('User data:', response.data);
+                // console.log('User data:', response.data);
                 setUser(response.data);
                 setProfileColor(response.data.profileColor || '#FF5733');
                 setHeaderColor(response.data.headerColor || '#33FF57');
             })
             .catch(error => console.error('User yükleme hatası:', error));
 
-        // Değişiklik: Takip durumunu kontrol et
+        // Fetch initial counts
+        fetchCounts(idToFetch);
+
+        // Check if logged in user is following this user
         if (loggedInUserId && urlUserId && loggedInUserId !== urlUserId) {
             followService.getFollowing(loggedInUserId)
                 .then(response => {
@@ -42,17 +72,34 @@ function User() {
         }
     }, [urlUserId, loggedInUserId]);
 
-    // Değişiklik: Takip etme/takipten çıkma fonksiyonu
-    const handleFollowToggle = () => {
+    const handleFollowToggle = (targetId) => {
         if (isFollowing) {
-            followService.unfollowUser(loggedInUserId, urlUserId)
-                .then(() => setIsFollowing(false))
+            followService.unfollowUser(loggedInUserId, targetId)
+                .then(() => {
+                    setIsFollowing(false);
+                    // Güncel sayıları backend'den al
+                    fetchCounts(urlUserId);
+                })
                 .catch(error => console.error('Takipten çıkma hatası:', error));
         } else {
-            followService.followUser(loggedInUserId, urlUserId)
-                .then(() => setIsFollowing(true))
+            followService.followUser(loggedInUserId, targetId)
+                .then(() => {
+                    setIsFollowing(true);
+                    // Güncel sayıları backend'den al
+                    fetchCounts(urlUserId);
+                })
                 .catch(error => console.error('Takip etme hatası:', error));
         }
+    };
+
+    const handleUserClick = (userId) => {
+        setShowFollowModal(false);
+        navigate(`/users/${userId}`);
+    };
+
+    const openFollowModal = (type) => {
+        setModalType(type);
+        setShowFollowModal(true);
     };
 
     const handleColorChange = (type, value) => {
@@ -104,27 +151,32 @@ function User() {
                     borderRadius: '50%',
                     marginRight: '20px'
                 }}></div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <h1 style={{ margin: 0, color: textColor }}>{user.userName}</h1>
-                    {/* Değişiklik: Follow butonu */}
+                <div style={{ display: 'flex', flexDirection: 'column', color: textColor }}>
+                    <h1 style={{ margin: 0 }}>{user.userName}</h1>
+                    <div style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
+                        <span 
+                            style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                            onClick={() => openFollowModal('followers')}
+                        >
+                            {followerCount} Followers
+                        </span>
+                        <span 
+                            style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                            onClick={() => openFollowModal('following')}
+                        >
+                            {followingCount} Following
+                        </span>
+                        <span>{totalLikes} Likes</span>
+                    </div>
                     {loggedInUserId && loggedInUserId !== urlUserId && (
                         <Button
-                            style={{ marginLeft: '10px' }}
+                            style={{ marginTop: '10px', width: 'fit-content' }}
                             color={isFollowing ? 'grey' : 'blue'}
-                            onClick={handleFollowToggle}
+                            onClick={() => handleFollowToggle(urlUserId)}
                         >
-                            {isFollowing ? 'Following' : 'Follow'}
+                            {isFollowing ? 'Unfollow' : 'Follow'}
                         </Button>
                     )}
-                </div>
-                <div>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: textColor }}>
-                        <li>Joined: {user.createDate ? new Date(user.createDate).toLocaleDateString() : 'Unknown'}</li>
-                        <li>
-                            <Icon name="heart" style={{ marginRight: '5px' }} />
-                            {totalLikes}
-                        </li>
-                    </ul>
                 </div>
                 {loggedInUserId === urlUserId && (
                     <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
@@ -200,11 +252,52 @@ function User() {
                 )}
             </div>
 
+            {/* Follow/Following Modal */}
+            <Modal
+                open={showFollowModal}
+                onClose={() => setShowFollowModal(false)}
+                size="tiny"
+            >
+                <Modal.Header>
+                    {modalType === 'followers' ? 'Followers' : 'Following'}
+                </Modal.Header>
+                <Modal.Content>
+                    <List divided relaxed>
+                        {(modalType === 'followers' ? followers : following).map(user => (
+                            <List.Item key={user.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
+                                <div 
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => handleUserClick(user.id)}
+                                >
+                                    <List.Content>
+                                        <List.Header>{user.userName}</List.Header>
+                                    </List.Content>
+                                </div>
+                                {loggedInUserId && loggedInUserId !== user.id && (
+                                    <Button
+                                        size='tiny'
+                                        color={following.some(f => f.id === user.id) ? 'grey' : 'blue'}
+                                        onClick={() => handleFollowToggle(user.id)}
+                                    >
+                                        {following.some(f => f.id === user.id) ? 'Unfollow' : 'Follow'}
+                                    </Button>
+                                )}
+                            </List.Item>
+                        ))}
+                    </List>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick={() => setShowFollowModal(false)} primary>
+                        Close
+                    </Button>
+                </Modal.Actions>
+            </Modal>
+
             <Container style={{ width: '100%' }}>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div style={{ width: 'fit-content', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                         <h1 style={{ margin: '0 0 10px 0' }}>{user.userName}'s Posts</h1>
-                        <PostCard userId={urlUserId || loggedInUserId} onPostsLoaded={handlePostsLoaded} />
+                        <PostCard userId={urlUserId || loggedInUserId} onPostsLoaded={handlePostsLoaded} filterByUser={true} />
                     </div>
                 </div>
             </Container>

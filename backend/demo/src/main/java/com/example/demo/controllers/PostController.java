@@ -52,4 +52,9 @@ public class PostController {
         List<Post> posts = postService.searchPosts(title);
         return ResponseEntity.ok(posts);
     }
+
+@GetMapping("/following/{userId}")
+    public ResponseEntity<List<PostResponse>> getFollowingUsersPosts(@PathVariable Long userId) {
+        return ResponseEntity.ok(postService.getFollowingUsersPosts(userId));
+    }
 }

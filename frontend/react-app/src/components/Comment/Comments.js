@@ -16,7 +16,7 @@ function Comments({ postId }) {
         setLoading(true);
         commentService.getCommentsByPostId(postId)
             .then(result => {
-                console.log(`Comments for post ${postId}:`, result.data);
+                // console.log(`Comments for post ${postId}:`, result.data);
                 setComments(result.data);
                 setLoading(false);
             })
@@ -47,7 +47,7 @@ function Comments({ postId }) {
         setLoading(true);
         commentService.createOneComment(commentData)
             .then(result => {
-                console.log('Comment created:', result.data);
+                // console.log('Comment created:', result.data);
                 setComments([...comments, result.data]);
                 setNewComment('');
                 setLoading(false);
@@ -68,7 +68,7 @@ function Comments({ postId }) {
         setLoading(true);
         commentService.deleteOneCommentById(commentId)
             .then(() => {
-                console.log(`Comment ${commentId} deleted`);
+                // console.log(`Comment ${commentId} deleted`);
                 setComments(comments.filter(comment => comment.id !== commentId));
                 setLoading(false);
             })
@@ -99,7 +99,7 @@ function Comments({ postId }) {
                         <Comment key={comment.id}>
                             <div
                                 style={{
-                                    backgroundColor: comment.user?.profileColor || '#ffffff',
+                                    backgroundColor: comment.profileColor || '#ffffff',
                                     color: "black",
                                     display: 'flex',
                                     justifyContent: 'center',
@@ -113,15 +113,15 @@ function Comments({ postId }) {
                                     marginRight: '10px',
                                 }}
                             >
-                                {comment.user?.userName?.charAt(0) || 'U'}
+                                {comment.userName?.charAt(0) || 'U'}
                             </div>
                             <Comment.Content>
                                 <Comment.Author 
                                     as="a" 
-                                    onClick={() => handleUserClick(comment.user?.id)} 
+                                    onClick={() => handleUserClick(comment.userId)} 
                                     style={{ cursor: 'pointer' }}
                                 >
-                                    {comment.user?.userName || 'Unknown'}
+                                    {comment.userName || 'Unknown'}
                                 </Comment.Author>
                                 <Comment.Metadata>
                                     <div>{comment.createDate ? new Date(comment.createDate).toLocaleString() : 'Unknown'}</div>
@@ -133,10 +133,10 @@ function Comments({ postId }) {
                                         marginLeft: '50px',
                                     }}
                                 >
-                                    <Comment.Action onClick={() => handleReplyClick(comment.user?.userName || 'Unknown')}>
+                                    <Comment.Action onClick={() => handleReplyClick(comment.userName || 'Unknown')}>
                                         Reply
                                     </Comment.Action>
-                                    {comment.user?.id === currentUserId && (
+                                    {comment.userId === currentUserId && (
                                         <Comment.Action onClick={() => handleDeleteComment(comment.id)}>
                                             Delete
                                         </Comment.Action>
@@ -147,7 +147,7 @@ function Comments({ postId }) {
                     ))
                 )}
 
-                <Form reply>
+                <Form>
                     <Form.TextArea
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}

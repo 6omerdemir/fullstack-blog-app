@@ -1,16 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Container, Menu } from 'semantic-ui-react';
 import PostCard from '../PostCard/PostCard';
 import './Home.css';
-import { Icon } from 'semantic-ui-react';
+
 function Home() {
+    const [activeTab, setActiveTab] = useState('recent');
+    const userId = localStorage.getItem('userId');
+
+    const handleTabChange = (e, { name }) => setActiveTab(name);
+
     return (
         <div className="home-container">
-            <div>
-                <h1>
-                    <Icon name="home"></Icon>
-                </h1>
-                <PostCard />
-            </div>
+            <Menu pointing secondary>
+                <Menu.Item
+                    name='recent'
+                    active={activeTab === 'recent'}
+                    onClick={handleTabChange}
+                >
+                    Recent
+                </Menu.Item>
+                {userId && (
+                    <Menu.Item
+                        name='following'
+                        active={activeTab === 'following'}
+                        onClick={handleTabChange}
+                    >
+                        Following
+                    </Menu.Item>
+                )}
+            </Menu>
+
+            <PostCard 
+                userId={userId} 
+                activeTab={activeTab}
+            />
         </div>
     );
 }

@@ -2,21 +2,25 @@ package com.example.demo.dtos.responses;
 
 import java.util.Date;
 
-public class UserResponse {
+public class CommentResponse {
     private Long id;
+    private Long userId;
     private String userName;
     private String profileColor;
-    private String headerColor;
+    private Long postId;
+    private String text;
     private Date createDate;
 
-    public UserResponse() {
+    public CommentResponse() {
     }
 
-    public UserResponse(Long id, String userName, String profileColor, String headerColor, Date createDate) {
+    public CommentResponse(Long id, Long userId, String userName, String profileColor, Long postId, String text, Date createDate) {
         this.id = id;
+        this.userId = userId;
         this.userName = userName;
         this.profileColor = profileColor;
-        this.headerColor = headerColor;
+        this.postId = postId;
+        this.text = text;
         this.createDate = createDate;
     }
 
@@ -26,6 +30,14 @@ public class UserResponse {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -44,12 +56,20 @@ public class UserResponse {
         this.profileColor = profileColor;
     }
 
-    public String getHeaderColor() {
-        return headerColor;
+    public Long getPostId() {
+        return postId;
     }
 
-    public void setHeaderColor(String headerColor) {
-        this.headerColor = headerColor;
+    public void setPostId(Long postId) {
+        this.postId = postId;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public Date getCreateDate() {

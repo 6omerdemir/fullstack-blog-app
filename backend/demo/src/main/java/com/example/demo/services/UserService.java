@@ -1,7 +1,9 @@
 package com.example.demo.services;
 
 import com.example.demo.entities.User;
+import com.example.demo.repos.FollowRepository;
 import com.example.demo.repos.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -10,10 +12,14 @@ import java.util.List;
 import java.util.Optional;
 @Service
 public class UserService {
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final FollowRepository followRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, FollowRepository followRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.followRepository = followRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getAllUsers() {
@@ -34,7 +40,9 @@ public class UserService {
         if(user.isPresent()){
             User foundUser = user.get();
             foundUser.setUserName(newUser.getUserName());
-            foundUser.setPassword(newUser.getPassword());
+            if (newUser.getPassword() != null && !newUser.getPassword().isEmpty()) {
+                foundUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            }
             foundUser.setProfileColor(newUser.getProfileColor());
             foundUser.setHeaderColor(newUser.getHeaderColor());
             userRepository.save(foundUser);
@@ -52,10 +60,10 @@ public class UserService {
         return userRepository.findByUserName(userName);
     }
 
-    public List<User> searchUsers(String userName){
-        if(userName == null || userName.trim().isEmpty()){
+    public List<User> searchUsers(String query) {
+        if(query == null || query.trim().isEmpty()){
             return Collections.emptyList();
         }
-        return userRepository.findByUserNameContaining(userName);
+        return userRepository.findByUserNameContaining(query);
     }
 }

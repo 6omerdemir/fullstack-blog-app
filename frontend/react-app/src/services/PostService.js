@@ -1,4 +1,5 @@
 import axios from './axios';
+
 export default class PostService {
 
 getAllPosts(userId) {
@@ -24,5 +25,9 @@ getAllPosts(userId) {
 
 searchPosts(query) {
     return axios.get('/posts/search', { params: { q: query } })
+}
+
+getFollowingPosts(userId) {
+    return axios.get(`/posts/following/${userId}`)
 }
 }

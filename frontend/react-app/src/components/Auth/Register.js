@@ -25,7 +25,7 @@ function Register() {
             try {
                 const authService = new AuthService();
                 const response = await authService.register(registerData);
-                console.log("Register successful:", response.data);
+                // console.log("Register successful:", response.data);
                 //const token = response.data.message.split(' ')[1];
                 //localStorage.setItem('token', token);
                 navigate('/login');

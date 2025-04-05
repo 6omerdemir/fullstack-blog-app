@@ -5,7 +5,7 @@ import PostService from '../../services/PostService';
 import LikeService from '../../services/LikeService';
 import './PostCard.css';
 
-function PostCard({ userId, onPostsLoaded }) {
+function PostCard({ userId, onPostsLoaded, activeTab, filterByUser }) {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [posts, setPosts] = useState([]);
@@ -16,7 +16,11 @@ function PostCard({ userId, onPostsLoaded }) {
         const postService = new PostService();
         const likeService = new LikeService();
 
-        postService.getAllPosts(userId)
+        const fetchPosts = activeTab === 'following' && userId
+            ? postService.getFollowingPosts(userId)
+            : postService.getAllPosts(filterByUser ? userId : null);
+
+        fetchPosts
             .then(result => {
                 const fetchedPosts = result.data;
                 const sortedPosts = fetchedPosts.sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
@@ -26,7 +30,7 @@ function PostCard({ userId, onPostsLoaded }) {
                         .then(likeRes => {
                             const likes = likeRes.data;
                             const likeCount = likes.length;
-                            const isLiked = likes.some(like => like.user?.id === currentUserId);
+                            const isLiked = likes.some(like => like.userId === currentUserId);
                             return { ...post, likes, likeCount, isLiked };
                         })
                         .catch(err => {
@@ -50,7 +54,7 @@ function PostCard({ userId, onPostsLoaded }) {
                 setError(error);
                 setIsLoaded(true);
             });
-    }, [userId, currentUserId]);
+    }, [userId, currentUserId, activeTab, filterByUser]);
 
     const handlePostClick = (postId) => {
         navigate(`/posts/${postId}`);
@@ -143,20 +147,19 @@ function PostCard({ userId, onPostsLoaded }) {
                             <span style={{ fontWeight: 'lighter' }}>{truncateText(post.text)}</span>
                         </CardDescription>
                     </CardContent>
-                    <CardContent extra>
-                        <Button
-                            color={post.isLiked ? 'red' : 'grey'}
-                            content="Like"
-                            icon="heart"
-                            label={{
-                                basic: true,
-                                color: 'grey',
-                                pointing: 'left',
-                                content: post.likeCount,
-                            }}
-                            onClick={handleLikeClick(post.id, post.isLiked)}
-                        />
-                    </CardContent>
+                    
+                    <Button
+                        color={post.isLiked ? 'red' : 'grey'}
+                        content="Like"
+                        icon="heart"
+                        label={{
+                            basic: true,
+                            color: 'grey',
+                            pointing: 'left',
+                            content: post.likeCount,
+                        }}
+                        onClick={handleLikeClick(post.id, post.isLiked)}
+                    />
                 </Card>
             ))}
         </div>

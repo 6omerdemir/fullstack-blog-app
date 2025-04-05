@@ -45,11 +45,11 @@ function PostForm() {
             const postService = new PostService();
             if (postId) {
                 const response = await postService.updatePostById(postId, postData);
-                console.log('Post updated:', response.data);
+                // console.log('Post updated:', response.data);
                 navigate(`/posts/${postId}`); 
             } else {
                 const response = await postService.createPost(postData);
-                console.log('Post created:', response.data);
+                // console.log('Post created:', response.data);
                 navigate('/'); 
             }
             setTitle('');

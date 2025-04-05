@@ -18,12 +18,12 @@ public class FollowService {
     @Autowired
     private UserRepository userRepository;
 
-    public void followUser(Long followerId, Long followingId) {
+    public Follow followUser(Long followerId, Long followingId) {
         if (followerId.equals(followingId)) {
             throw new RuntimeException("Cannot follow yourself");
         }
         if (followRepository.existsByFollowerIdAndFollowingId(followerId, followingId)) {
-            return;
+            return null;
         }
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new RuntimeException("Follower not found"));
@@ -32,7 +32,7 @@ public class FollowService {
         Follow follow = new Follow();
         follow.setFollower(follower);
         follow.setFollowing(following);
-        followRepository.save(follow);
+        return followRepository.save(follow);
     }
 
     public void unfollowUser(Long followerId, Long followingId) {
