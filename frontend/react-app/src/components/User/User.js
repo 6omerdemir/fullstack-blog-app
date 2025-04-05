@@ -21,14 +21,13 @@ function User() {
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
     const [showFollowModal, setShowFollowModal] = useState(false);
-    const [modalType, setModalType] = useState(''); // 'followers' or 'following'
+    const [modalType, setModalType] = useState(''); 
     const navigate = useNavigate();
 
     const userService = new UserService();
     const followService = new FollowService();
 
     const fetchCounts = (userId) => {
-        // Fetch follower list
         followService.getFollowers(userId)
             .then(response => {
                 setFollowerCount(response.data.length);
@@ -36,7 +35,6 @@ function User() {
             })
             .catch(error => console.error('Follower yükleme hatası:', error));
 
-        // Fetch following list
         followService.getFollowing(userId)
             .then(response => {
                 setFollowingCount(response.data.length);
@@ -48,7 +46,6 @@ function User() {
     useEffect(() => {
         const idToFetch = urlUserId || loggedInUserId;
         
-        // Fetch user data
         userService.getOneUserById(idToFetch)
             .then(response => {
                 // console.log('User data:', response.data);
@@ -58,10 +55,8 @@ function User() {
             })
             .catch(error => console.error('User yükleme hatası:', error));
 
-        // Fetch initial counts
         fetchCounts(idToFetch);
 
-        // Check if logged in user is following this user
         if (loggedInUserId && urlUserId && loggedInUserId !== urlUserId) {
             followService.getFollowing(loggedInUserId)
                 .then(response => {
@@ -77,7 +72,6 @@ function User() {
             followService.unfollowUser(loggedInUserId, targetId)
                 .then(() => {
                     setIsFollowing(false);
-                    // Güncel sayıları backend'den al
                     fetchCounts(urlUserId);
                 })
                 .catch(error => console.error('Takipten çıkma hatası:', error));
@@ -85,7 +79,6 @@ function User() {
             followService.followUser(loggedInUserId, targetId)
                 .then(() => {
                     setIsFollowing(true);
-                    // Güncel sayıları backend'den al
                     fetchCounts(urlUserId);
                 })
                 .catch(error => console.error('Takip etme hatası:', error));
@@ -252,7 +245,6 @@ function User() {
                 )}
             </div>
 
-            {/* Follow/Following Modal */}
             <Modal
                 open={showFollowModal}
                 onClose={() => setShowFollowModal(false)}
