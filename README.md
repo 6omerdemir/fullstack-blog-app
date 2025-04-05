@@ -1,4 +1,4 @@
-# Blog Application
+# Fullstack Blog App (Spring Boot + React)
 
 A full-stack blog application from scratch, built with Spring Boot and React.
 
@@ -16,6 +16,13 @@ A full-stack blog application from scratch, built with Spring Boot and React.
 - Axios
 - Semantic Uı
 
+## Features
+- User authentication and authorization
+- Create, read, update, and delete blog posts
+- Follow users
+- Comment and like system
+- Search for users and posts
+
 ## Installation and Setup
 
 ### Prerequisites
@@ -23,6 +30,18 @@ A full-stack blog application from scratch, built with Spring Boot and React.
 - Node.js 16.x or higher
 - MySQL
 - Maven
+- Git
+
+### Cloning the Repository
+1. Open your terminal/command prompt
+2. Clone the repository:
+```bash
+git clone https://github.com/6omerdemir/fullstack-blog-app.git
+```
+3. Navigate to the project directory:
+```bash
+cd blog-app
+```
 
 ### Backend Setup
 1. Navigate to the backend directory:
@@ -35,7 +54,7 @@ cd backend/demo
 # application name
 spring.application.name=demo
 
-# hibernate ddl-auto strategy (none, validate, update, create, create-drop)
+# hibernate ddl-auto strategy
 spring.jpa.hibernate.ddl-auto=update
 
 # database connection settings
@@ -82,10 +101,3 @@ npm start
 ```
 
 The frontend application will be available at `http://localhost:3000`
-
-## Features
-- User authentication and authorization
-- Create, read, update, and delete blog posts
-- Follow users
-- Comment and Like system
-- Search users and posts
