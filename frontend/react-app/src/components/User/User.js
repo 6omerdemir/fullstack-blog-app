@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import UserService from '../../services/UserService';
+import FollowService from '../../services/FollowService'; // Değişiklik: FollowService eklendi
 import PostCard from '../PostCard/PostCard';
 import { Container, Icon, Modal, Button } from 'semantic-ui-react';
 import { colorOptions } from '../Colors/Colors';
@@ -14,9 +15,12 @@ function User() {
     const [posts, setPosts] = useState([]);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [selectedColorType, setSelectedColorType] = useState('profileColor');
+    const [isFollowing, setIsFollowing] = useState(false); // Değişiklik: Takip durumu için state
+
+    const userService = new UserService();
+    const followService = new FollowService(); // Değişiklik: FollowService instance’ı
 
     useEffect(() => {
-        const userService = new UserService();
         const idToFetch = urlUserId || loggedInUserId;
         userService.getOneUserById(idToFetch)
             .then(response => {
@@ -26,11 +30,33 @@ function User() {
                 setHeaderColor(response.data.headerColor || '#33FF57');
             })
             .catch(error => console.error('User yükleme hatası:', error));
+
+        // Değişiklik: Takip durumunu kontrol et
+        if (loggedInUserId && urlUserId && loggedInUserId !== urlUserId) {
+            followService.getFollowing(loggedInUserId)
+                .then(response => {
+                    const followingIds = response.data.map(u => u.id);
+                    setIsFollowing(followingIds.includes(Number(urlUserId)));
+                })
+                .catch(error => console.error('Takip kontrol hatası:', error));
+        }
     }, [urlUserId, loggedInUserId]);
+
+    // Değişiklik: Takip etme/takipten çıkma fonksiyonu
+    const handleFollowToggle = () => {
+        if (isFollowing) {
+            followService.unfollowUser(loggedInUserId, urlUserId)
+                .then(() => setIsFollowing(false))
+                .catch(error => console.error('Takipten çıkma hatası:', error));
+        } else {
+            followService.followUser(loggedInUserId, urlUserId)
+                .then(() => setIsFollowing(true))
+                .catch(error => console.error('Takip etme hatası:', error));
+        }
+    };
 
     const handleColorChange = (type, value) => {
         const updatedUser = { ...user, [type]: value };
-        const userService = new UserService();
         userService.updateUserById(loggedInUserId, updatedUser)
             .then(response => {
                 setUser(response.data);
@@ -78,8 +104,20 @@ function User() {
                     borderRadius: '50%',
                     marginRight: '20px'
                 }}></div>
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     <h1 style={{ margin: 0, color: textColor }}>{user.userName}</h1>
+                    {/* Değişiklik: Follow butonu */}
+                    {loggedInUserId && loggedInUserId !== urlUserId && (
+                        <Button
+                            style={{ marginLeft: '10px' }}
+                            color={isFollowing ? 'grey' : 'blue'}
+                            onClick={handleFollowToggle}
+                        >
+                            {isFollowing ? 'Following' : 'Follow'}
+                        </Button>
+                    )}
+                </div>
+                <div>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: textColor }}>
                         <li>Joined: {user.createDate ? new Date(user.createDate).toLocaleDateString() : 'Unknown'}</li>
                         <li>

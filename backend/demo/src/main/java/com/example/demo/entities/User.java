@@ -1,14 +1,15 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-
-//@Data
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +28,14 @@ public class User {
     private String profileColor;
 
     private String headerColor;
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Follow> following = new ArrayList<>();
+
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Follow> followers = new ArrayList<>();
 
     public String getProfileColor() {
         return profileColor;
@@ -84,6 +93,22 @@ public class User {
         this.password = password;
     }
 
+    public List<Follow> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<Follow> following) {
+        this.following = following;
+    }
+
+    public List<Follow> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<Follow> followers) {
+        this.followers = followers;
+    }
+
     public User(Long id, String userName, String password, String roles, Date createDate, String profileColor, String headerColor) {
         this.id = id;
         this.userName = userName;
@@ -94,5 +119,5 @@ public class User {
         this.headerColor = headerColor;
     }
 
-    public User(){};
+    public User() {}
 }
