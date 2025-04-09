@@ -1,0 +1,8 @@
+# IDE - VSCode
+.vscode/
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr 
