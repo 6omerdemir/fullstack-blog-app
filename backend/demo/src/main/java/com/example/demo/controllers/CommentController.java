@@ -3,7 +3,6 @@ package com.example.demo.controllers;
 import com.example.demo.dtos.requests.CommentCreateRequest;
 import com.example.demo.dtos.requests.CommentUpdateRequest;
 import com.example.demo.dtos.responses.CommentResponse;
-import com.example.demo.entities.Comment;
 import com.example.demo.mapper.ModelMapperService;
 import com.example.demo.services.CommentService;
 import org.springframework.web.bind.annotation.*;
